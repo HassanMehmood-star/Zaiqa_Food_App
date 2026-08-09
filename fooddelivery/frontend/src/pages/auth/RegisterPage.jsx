@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { UtensilsCrossed, User, Store } from 'lucide-react';
+import { UtensilsCrossed, User, Store, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterPage() {
@@ -10,6 +10,10 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '', role: 'regular_user' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  
+  // Password show/hide states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   function validate() {
     const e = {};
@@ -51,36 +55,77 @@ export default function RegisterPage() {
           <div>
             <label className="label">I am a</label>
             <div className="grid grid-cols-2 gap-3">
-              <button type="button" onClick={() => setForm({ ...form, role: 'regular_user' })}
-                className={`flex flex-col items-center gap-1.5 rounded-xl border-2 py-3 text-sm font-medium transition-colors ${form.role === 'regular_user' ? 'border-primary bg-primary-light text-primary-dark' : 'border-border text-muted'}`}>
+              <button 
+                type="button" 
+                onClick={() => setForm({ ...form, role: 'regular_user' })}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border-2 py-3 text-sm font-medium transition-colors ${form.role === 'regular_user' ? 'border-primary bg-primary-light text-primary-dark' : 'border-border text-muted'}`}
+              >
                 <User className="h-5 w-5" /> Customer
               </button>
-              <button type="button" onClick={() => setForm({ ...form, role: 'restaurant_owner' })}
-                className={`flex flex-col items-center gap-1.5 rounded-xl border-2 py-3 text-sm font-medium transition-colors ${form.role === 'restaurant_owner' ? 'border-primary bg-primary-light text-primary-dark' : 'border-border text-muted'}`}>
+              <button 
+                type="button" 
+                onClick={() => setForm({ ...form, role: 'restaurant_owner' })}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border-2 py-3 text-sm font-medium transition-colors ${form.role === 'restaurant_owner' ? 'border-primary bg-primary-light text-primary-dark' : 'border-border text-muted'}`}
+              >
                 <Store className="h-5 w-5" /> Restaurant Owner
               </button>
             </div>
           </div>
+
           <div>
             <label className="label">Full name</label>
             <input className="input" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             {errors.fullName && <p className="text-xs text-danger mt-1">{errors.fullName}</p>}
           </div>
+
           <div>
             <label className="label">Email</label>
             <input type="email" className="input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             {errors.email && <p className="text-xs text-danger mt-1">{errors.email}</p>}
           </div>
+
+          {/* Password Field */}
           <div>
             <label className="label">Password</label>
-            <input type="password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            <div className="relative">
+              <input 
+                type={showPassword ? 'text' : 'password'} 
+                className="input pr-10" 
+                value={form.password} 
+                onChange={(e) => setForm({ ...form, password: e.target.value })} 
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
             {errors.password && <p className="text-xs text-danger mt-1">{errors.password}</p>}
           </div>
+
+          {/* Confirm Password Field */}
           <div>
             <label className="label">Confirm password</label>
-            <input type="password" className="input" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
+            <div className="relative">
+              <input 
+                type={showConfirmPassword ? 'text' : 'password'} 
+                className="input pr-10" 
+                value={form.confirmPassword} 
+                onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} 
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+              >
+                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
             {errors.confirmPassword && <p className="text-xs text-danger mt-1">{errors.confirmPassword}</p>}
           </div>
+
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? 'Creating account…' : 'Create account'}
           </button>
